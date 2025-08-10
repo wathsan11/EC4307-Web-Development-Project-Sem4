@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/artists")
 public class ArtistsController {
@@ -89,5 +90,23 @@ public class ArtistsController {
         artistRepository.deleteById(id);
         return ResponseEntity.ok("Artist removed successfully");
     }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody Artist loginData) {
+        // Find artist by email (assuming you add findByEmail method in ArtistRepository)
+        Optional<Artist> artistOpt = artistRepository.findByEmail(loginData.getEmail());
+
+        if (artistOpt.isPresent()) {
+            Artist artist = artistOpt.get();
+            if (artist.getPassword().equals(loginData.getPassword())) {
+                return ResponseEntity.ok(artist); // Successful login, return artist data
+            } else {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid password");
+            }
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Artist not found");
+        }
+    }
+
 
 }

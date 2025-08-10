@@ -18,79 +18,40 @@ public class Painting {
     private int artId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ArtistId",referencedColumnName = "Id",nullable = true)
+    @JoinColumn(name = "ArtistId", referencedColumnName = "Id", nullable = true)
     private Artist artist;
 
-    @Column(name = "ArtName",nullable = false)
+    @Column(name = "ArtName", nullable = false)
     private String artName;
 
-    @Lob
-    @Column(name = "ArtImage")
-    private byte[] artImage;
+    @Column(name = "ArtUrl", length = 500)
+    private String artUrl;
 
-    @Column(name = "Price")
+    @Column(name = "Price", nullable = false)
     private double price;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "Status")
     private Status status = Status.AVAILABLE;
 
-    public Painting(){};
+    public Painting() {}
 
-    public Painting(int artId, Artist artist, String artName, byte[] artImage, double price, Status status) {
-        this.artId = artId;
-        this.artist = artist;
-        this.artName = artName;
-        this.artImage = artImage;
-        this.price = price;
-        this.status = status;
-    }
+    // Getters and setters
+    public int getArtId() { return artId; }
+    public void setArtId(int artId) { this.artId = artId; }
 
-    public int getArtId() {
-        return artId;
-    }
+    public Artist getArtist() { return artist; }
+    public void setArtist(Artist artist) { this.artist = artist; }
 
-    public void setArtId(int artId) {
-        this.artId = artId;
-    }
+    public String getArtName() { return artName; }
+    public void setArtName(String artName) { this.artName = artName; }
 
-    public Artist getArtist() {
-        return artist;
-    }
+    public String getArtUrl() { return artUrl; }
+    public void setArtUrl(String artUrl) { this.artUrl = artUrl; }
 
-    public void setArtist(Artist artist) {
-        this.artist = artist;
-    }
+    public double getPrice() { return price; }
+    public void setPrice(double price) { this.price = price; }
 
-    public String getArtName() {
-        return artName;
-    }
-
-    public void setArtName(String artName) {
-        this.artName = artName;
-    }
-
-    public byte[] getArtImage() {
-        return artImage;
-    }
-
-    public void setArtImage(byte[] artImage) {
-        this.artImage = artImage;
-    }
-
-    public double getPrice() {
-        return price;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
-    }
-
-    public Status getStatus() {
-        return status;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
-    }
+    public Status getStatus() { return status; }
+    public void setStatus(Status status) { this.status = status; }
 }

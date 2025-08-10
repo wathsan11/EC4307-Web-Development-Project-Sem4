@@ -3,7 +3,7 @@ package com.AtrSite.Siththam.models;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "ARTIST")
+@Table(name = "ARTISTS")
 public class Artist {
 
     @Id

@@ -8,12 +8,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import com.AtrSite.Siththam.dto.PaintingDTO;
 import java.util.List;
+
+
 import java.util.Optional;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
-@RequestMapping("/paintings")
+@RequestMapping("/api/paintings")
 public class PaintingsController {
 
     @Autowired
@@ -22,68 +25,116 @@ public class PaintingsController {
     @Autowired
     private ArtistRepository artistRepository;
 
-    // 1. Upload new painting (Artist must exist)
     @PostMapping("/upload")
-    public ResponseEntity<?> uploadPainting(@RequestBody Painting painting) {
-        if (painting.getArtist() == null || painting.getArtist().getId() == 0) {
-            return ResponseEntity.badRequest().body("Artist ID is required");
+    public ResponseEntity<?> uploadPainting(
+            @RequestParam int artistId,
+            @RequestParam String artName,
+            @RequestParam double price,
+            @RequestParam(required = false) String status,
+            @RequestParam String artUrl
+    ) {
+        if (artName == null || artName.trim().isEmpty()) {
+            return ResponseEntity.badRequest().body("ArtName is required");
+        }
+        if (artUrl == null || artUrl.trim().isEmpty()) {
+            return ResponseEntity.badRequest().body("ArtUrl is required");
         }
 
-        Optional<Artist> artistOpt = artistRepository.findById(painting.getArtist().getId());
+        Optional<Artist> artistOpt = artistRepository.findById(artistId);
         if (artistOpt.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Artist not found");
         }
 
+        Painting.Status paintingStatus = Painting.Status.AVAILABLE;
+        if (status != null && !status.trim().isEmpty()) {
+            try {
+                paintingStatus = Painting.Status.valueOf(status.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                return ResponseEntity.badRequest().body("Invalid status value");
+            }
+        }
+
+        Painting painting = new Painting();
         painting.setArtist(artistOpt.get());
-        Painting saved = paintingRepository.save(painting);
-        return new ResponseEntity<>(saved, HttpStatus.CREATED);
+        painting.setArtName(artName.trim());
+        painting.setPrice(price);
+        painting.setStatus(paintingStatus);
+        painting.setArtUrl(artUrl.trim());
+
+        paintingRepository.save(painting);
+        return ResponseEntity.status(HttpStatus.CREATED).body("Painting uploaded successfully");
     }
 
-    // 2. Get all paintings
-    @GetMapping("/getAll")
-    public ResponseEntity<List<Painting>> getAllPaintings() {
-        return ResponseEntity.ok(paintingRepository.findAll());
-    }
-
-    // 3. Get painting by ID
     @GetMapping("/{id}")
-    public ResponseEntity<?> getPaintingById(@PathVariable int id) {
+    public ResponseEntity<?> getPainting(@PathVariable int id) {
         Optional<Painting> painting = paintingRepository.findById(id);
-        if (painting.isPresent()) {
-            return ResponseEntity.ok(painting.get());
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Painting not found");
-        }
+        return painting.<ResponseEntity<?>>map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body("Painting not found"));
     }
 
-    // 4. Update painting
-    @PutMapping("/update/{id}")
-    public ResponseEntity<?> updatePainting(@PathVariable int id, @RequestBody Painting updateData) {
-        Optional<Painting> optionalPainting = paintingRepository.findById(id);
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updatePainting(@PathVariable int id,
+                                            @RequestParam(required = false) String artName,
+                                            @RequestParam(required = false) Double price,
+                                            @RequestParam(required = false) String status,
+                                            @RequestParam(required = false) String artUrl,
+                                            @RequestParam(required = false) Integer artistId) {
 
-        if (optionalPainting.isPresent()) {
-            Painting painting = optionalPainting.get();
-            painting.setArtName(updateData.getArtName());
-            painting.setArtImage(updateData.getArtImage());
-            painting.setPrice(updateData.getPrice());
-            painting.setStatus(updateData.getStatus());
-
-            paintingRepository.save(painting);
-            return ResponseEntity.ok("Painting updated successfully");
-        } else {
+        Optional<Painting> paintingOpt = paintingRepository.findById(id);
+        if (paintingOpt.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Painting not found");
         }
+        Painting painting = paintingOpt.get();
+
+        if (artName != null) painting.setArtName(artName);
+        if (price != null) painting.setPrice(price);
+        if (status != null) {
+            try {
+                painting.setStatus(Painting.Status.valueOf(status.toUpperCase()));
+            } catch (IllegalArgumentException e) {
+                return ResponseEntity.badRequest().body("Invalid status value");
+            }
+        }
+        if (artUrl != null) painting.setArtUrl(artUrl);
+        if (artistId != null) {
+            Optional<Artist> artistOpt = artistRepository.findById(artistId);
+            if (artistOpt.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Artist not found");
+            }
+            painting.setArtist(artistOpt.get());
+        }
+
+        paintingRepository.save(painting);
+        return ResponseEntity.ok("Painting updated successfully");
     }
 
-    // 5. Delete painting
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> deletePainting(@PathVariable int id) {
         if (!paintingRepository.existsById(id)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Painting not found");
         }
-
         paintingRepository.deleteById(id);
         return ResponseEntity.ok("Painting deleted successfully");
     }
-}
 
+    @GetMapping("/getAll")
+    public ResponseEntity<?> getAllPaintings() {
+        List<PaintingDTO> dtos = paintingRepository.findAll()
+                .stream()
+                .map(p -> {
+                    PaintingDTO dto = new PaintingDTO();
+                    dto.setArtId(p.getArtId());
+                    dto.setArtName(p.getArtName());
+                    dto.setArtistName(p.getArtist().getName());
+                    dto.setArtUrl(p.getArtUrl());
+                    dto.setPrice(p.getPrice());
+                    dto.setStatus(p.getStatus());
+                    return dto;
+                })
+                .toList();
+
+        return ResponseEntity.ok(dtos);
+    }
+
+
+}
