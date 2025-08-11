@@ -47,23 +47,32 @@ A web application showcasing beautiful artworks by local artists. This platform 
 #### Steps
 
 1. Clone the repo:
+```bash
 git clone https://github.com/yourusername/siththam-art-gallery.git
 cd siththam-art-gallery
-
+```
 2. Setup backend:
 - Navigate to backend folder and configure database connection in application.properties.
 - Run the Spring Boot application:
+```bash
 ./mvnw spring-boot:run
+```
 
 3. Setup frontend:
 - Navigate to frontend folder:
+```bash
 cd siththam-frontend
+```
 
 - Install dependencies:
+```bash
 npm install
+```
 
 - Start React app:
+```bash
 npm start
+```
 
 ### Usage
 
@@ -81,7 +90,7 @@ npm start
 - POST /api/paintings/upload — Upload new painting
 
 ### Folder Structure
-
+```
 siththam-art-gallery/
 ├── backend/
 │   ├── src/main/java/com/atrsite/siththam/
@@ -93,6 +102,7 @@ siththam-art-gallery/
 │       ├── pages/
 │       └── App.js
 └── README.md
+```
 
 ### License
 
