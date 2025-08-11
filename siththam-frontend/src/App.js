@@ -12,7 +12,7 @@ import ArtistRegister from "./pages/ArtistRegister";
 function AppLayout() {
   const location = useLocation();
 
-  // Pages where Navbar should NOT appear
+  
   const hideNavbarRoutes = ["/login", "/register","/upload"];
 
   const shouldHideNavbar = hideNavbarRoutes.includes(location.pathname);

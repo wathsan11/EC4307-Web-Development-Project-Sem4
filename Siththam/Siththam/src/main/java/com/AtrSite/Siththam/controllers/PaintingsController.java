@@ -136,5 +136,51 @@ public class PaintingsController {
         return ResponseEntity.ok(dtos);
     }
 
+    @GetMapping("/byId/{id}")
+    public ResponseEntity<?> getPaintingById(@PathVariable int id) {
+        Optional<Painting> paintingOpt = paintingRepository.findById(id);
+
+        if (paintingOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Painting not found");
+        }
+
+        Painting p = paintingOpt.get();
+        PaintingDTO dto = new PaintingDTO();
+        dto.setArtId(p.getArtId());
+        dto.setArtName(p.getArtName());
+        dto.setArtistName(p.getArtist().getName());
+        dto.setArtUrl(p.getArtUrl());
+        dto.setPrice(p.getPrice());
+        dto.setStatus(p.getStatus());
+
+        return ResponseEntity.ok(dto);
+    }
+
+
+    @GetMapping("/byArtist/{artistId}")
+    public ResponseEntity<?> getPaintingsByArtist(@PathVariable int artistId) {
+        Optional<Artist> artistOpt = artistRepository.findById(artistId);
+        if (artistOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Artist not found");
+        }
+
+        List<PaintingDTO> dtos = paintingRepository.findAllByArtist(artistOpt.get())
+                .stream()
+                .map(p -> {
+                    PaintingDTO dto = new PaintingDTO();
+                    dto.setArtId(p.getArtId());
+                    dto.setArtName(p.getArtName());
+                    dto.setArtistName(p.getArtist().getName());
+                    dto.setArtUrl(p.getArtUrl());
+                    dto.setPrice(p.getPrice());
+                    dto.setStatus(p.getStatus());
+                    return dto;
+                })
+                .toList();
+
+        return ResponseEntity.ok(dtos);
+    }
+
+
 
 }

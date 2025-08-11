@@ -40,147 +40,116 @@ const ArtistLogin = () => {
     navigate("/register");
   };
 
-  const handleBackHome = () => {
-    navigate("/");
-  };
-
   return (
-    <div style={styles.pageContainer}>
-      <div style={styles.card}>
-        <h2 style={styles.title}>🎨 Artist Login</h2>
-        <form onSubmit={handleSubmit}>
-          <div style={styles.inputGroup}>
-            <label style={styles.label}>Email</label>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-              style={styles.input}
-            />
-          </div>
-          <div style={styles.inputGroup}>
-            <label style={styles.label}>Password</label>
-            <input
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-              style={styles.input}
-            />
-          </div>
-
-          <div style={styles.buttonRow}>
-            <button type="submit" style={styles.loginBtn}>
-              Login
-            </button>
-            <button
-              type="button"
-              onClick={handleBackHome}
-              style={styles.homeBtn}
-            >
-              Back to Home
-            </button>
-          </div>
+    <div style={containerStyle}>
+      <div style={cardStyle}>
+        <h2 style={titleStyle}>🎨 Artist Login</h2>
+        <form onSubmit={handleSubmit} style={formStyle}>
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            value={formData.email}
+            onChange={handleChange}
+            required
+            style={inputStyle}
+          />
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={formData.password}
+            onChange={handleChange}
+            required
+            style={inputStyle}
+          />
+          <button type="submit" style={submitBtnStyle}>
+            Login
+          </button>
         </form>
 
-        {message && <p style={styles.message}>{message}</p>}
+        {message && <p style={messageStyle}>{message}</p>}
 
-        <div style={{ marginTop: "20px", textAlign: "center" }}>
-          <button
-            onClick={handleRegisterRedirect}
-            style={styles.linkBtn}
-          >
-            Create Account
-          </button>
-        </div>
+        <button onClick={handleRegisterRedirect} style={linkBtnStyle}>
+          Create an Account
+        </button>
+
+        <button
+          onClick={() => navigate("/")}
+          style={{ ...submitBtnStyle, backgroundColor: "#555", marginTop: 15 }}
+        >
+          Back to Home
+        </button>
       </div>
     </div>
   );
 };
 
-const styles = {
-  pageContainer: {
-    minHeight: "100vh",
-    background: "linear-gradient(to bottom right, #2c3e50, #3498db)",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    padding: "20px",
-  },
-  card: {
-    background: "#fff",
-    padding: "30px",
-    borderRadius: "12px",
-    boxShadow: "0px 8px 20px rgba(0, 0, 0, 0.2)",
-    width: "100%",
-    maxWidth: "400px",
-  },
-  title: {
-    marginBottom: "20px",
-    textAlign: "center",
-    color: "#2c3e50",
-  },
-  inputGroup: {
-    marginBottom: "15px",
-  },
-  label: {
-    display: "block",
-    marginBottom: "5px",
-    fontWeight: "bold",
-    color: "#34495e",
-  },
-  input: {
-    width: "100%",
-    padding: "10px",
-    borderRadius: "8px",
-    border: "1px solid #ccc",
-    fontSize: "14px",
-  },
-  buttonRow: {
-    display: "flex",
-    gap: "10px",
-    marginTop: "10px",
-  },
-  loginBtn: {
-    flex: 1,
-    padding: "10px",
-    backgroundColor: "#3498db",
-    color: "white",
-    border: "none",
-    borderRadius: "8px",
-    cursor: "pointer",
-    fontWeight: "bold",
-    transition: "0.3s",
-  },
-  homeBtn: {
-    flex: 1,
-    padding: "10px",
-    backgroundColor: "#95a5a6",
-    color: "white",
-    border: "none",
-    borderRadius: "8px",
-    cursor: "pointer",
-    fontWeight: "bold",
-    transition: "0.3s",
-  },
-  linkBtn: {
-    background: "none",
-    border: "none",
-    color: "#3498db",
-    textDecoration: "underline",
-    cursor: "pointer",
-    fontSize: "1rem",
-    fontWeight: "bold",
-  },
-  message: {
-    marginTop: "15px",
-    textAlign: "center",
-    color: "#27ae60",
-    fontWeight: "bold",
-  },
+const containerStyle = {
+  maxWidth: 400,
+  margin: "60px auto",
+  padding: 20,
+  borderRadius: 8,
+  boxShadow: "0 4px 15px rgba(0,0,0,0.1)",
+  fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+  backgroundColor: "#fff",
+};
+
+const cardStyle = {
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+};
+
+const titleStyle = {
+  textAlign: "center",
+  marginBottom: 30,
+  color: "#333",
+};
+
+const formStyle = {
+  width: "100%",
+  display: "flex",
+  flexDirection: "column",
+  gap: 15,
+};
+
+const inputStyle = {
+  padding: "12px 15px",
+  borderRadius: 6,
+  border: "1px solid #ccc",
+  fontSize: "1rem",
+  outline: "none",
+  transition: "border-color 0.3s",
+};
+
+const submitBtnStyle = {
+  backgroundColor: "#4caf50",
+  color: "white",
+  border: "none",
+  padding: "12px",
+  borderRadius: 6,
+  cursor: "pointer",
+  fontWeight: "bold",
+  fontSize: "1rem",
+};
+
+const messageStyle = {
+  marginTop: 15,
+  textAlign: "center",
+  color: "#27ae60",
+  fontWeight: "bold",
+};
+
+const linkBtnStyle = {
+  background: "none",
+  border: "none",
+  color: "#3498db",
+  textDecoration: "underline",
+  cursor: "pointer",
+  fontSize: "1rem",
+  fontWeight: "bold",
+  marginTop: 20,
 };
 
 export default ArtistLogin;
