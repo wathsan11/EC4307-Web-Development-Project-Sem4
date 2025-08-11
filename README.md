@@ -76,7 +76,7 @@ npm start
 
 ### Usage
 
-- Open the React app in your browser (http://localhost:3000).
+- Open the React app in your browser at [http://localhost:3000](http://localhost:3000).
 - Register as an artist or log in.
 - Upload paintings to showcase your artwork.
 - Browse the gallery and view artworks.
